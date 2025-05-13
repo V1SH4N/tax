@@ -71,11 +71,6 @@ function drawTable(day, date, isMorning) {
     ctx.fillStyle = "black";
     drawHorizontallyCenteredText(ctx, "Wednedsay", 2565, 5555);
     ctx.fillText(date, 2359, 5650);
-    
-    morning.style.display = "none";
-    afternoon.style.display = "none";
-    downloadBtn.style.display = "block";
-    back.style.display = "block";
   });
 }
 
@@ -86,6 +81,10 @@ morning.addEventListener("click", function (e) {
   const day = getCurrentDay();
   const isMorning = true;
   drawTable(day, date, isMorning);
+  morning.style.display = "none";
+  afternoon.style.display = "none";
+  downloadBtn.style.display = "block";
+  back.style.display = "block";
 });
 
 afternoon.addEventListener("click", function (e) {
@@ -93,6 +92,10 @@ afternoon.addEventListener("click", function (e) {
     const day = getCurrentDay();
     const isMorning = false;
     drawTable(day, date, isMorning);
+    morning.style.display = "none";
+    afternoon.style.display = "none";
+    downloadBtn.style.display = "block";
+    back.style.display = "block";
   });
 
 downloadBtn.addEventListener("click", function () {
