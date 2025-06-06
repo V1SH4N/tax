@@ -69,7 +69,7 @@ function drawTable(day, date, isMorning) {
 
     ctx.font = "600 69px 'IBM Plex Sans', sans-serif";
     ctx.fillStyle = "black";
-    drawHorizontallyCenteredText(ctx, "Wednedsay", 2565, 5555);
+    drawHorizontallyCenteredText(ctx, day, 2565, 5555);
     ctx.fillText(date, 2359, 5650);
   });
 }
