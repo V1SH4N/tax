@@ -35,68 +35,74 @@ function drawHorizontallyCenteredText(ctx, text, centerX, y) {
   }
   
 
-function drawTable(day, date, isMorning) {
-  canvas.width = 4419;
-  canvas.height = 6250;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  const loadImage = src => new Promise(resolve => {
-    const img = new Image();
-    img.src = src;
-    img.onload = () => resolve(img);
-  });
-
-  const loadFonts = () => {
-    return document.fonts.load("600 69px 'IBM Plex Sans'").then(() => document.fonts.ready);
-  };
+  function drawTable(day, date, isMorning) {
+    canvas.width = 4419;
+    canvas.height = 6250;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   
+    const loadImage = src => new Promise(resolve => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => resolve(img);
+    });
+  
+    const loadFonts = () => {
+      return document.fonts.load("600 69px 'IBM Plex Sans'").then(() => document.fonts.ready);
+    };
+  
+    return Promise.all([
+      loadImage("./images/morning.png"),
+      loadImage("./images/afternoon.png"),
+      loadFonts()
+    ]).then(([morningImg, afternoonImg]) => {
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+      if (isMorning){
+          ctx.drawImage(morningImg, 0, 0);
+      } else {
+          ctx.drawImage(afternoonImg, 0, 0);
+      }
+  
+      ctx.font = "600 69px 'IBM Plex Sans', sans-serif";
+      ctx.fillStyle = "black";
+      drawHorizontallyCenteredText(ctx, day, 2565, 5555);
+      ctx.fillText(date, 2359, 5650);
+    });
+  }
+
   
 
-  Promise.all([
-    loadImage("./images/morning.png"),
-    loadImage("./images/afternoon.png"),
-    loadFonts()
-  ]).then(([morning, afternoon]) => {
 
-    ctx.fillStyle = "#FFFFFF";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    if (isMorning){
-        ctx.drawImage(morning, 0, 0);
-    }else{
-        ctx.drawImage(afternoon, 0, 0);
-    }
-
-    ctx.font = "600 69px 'IBM Plex Sans', sans-serif";
-    ctx.fillStyle = "black";
-    drawHorizontallyCenteredText(ctx, day, 2565, 5555);
-    ctx.fillText(date, 2359, 5650);
-  });
-}
-
-
-
-morning.addEventListener("click", function (e) {
+morning.addEventListener("click", async function (e) {
   const date = getFormattedDate();
   const day = getCurrentDay();
   const isMorning = true;
-  drawTable(day, date, isMorning);
+
+  await drawTable(day, date, isMorning); // Wait until drawing is done
+
+  // Only runs after everything is drawn
   morning.style.display = "none";
   afternoon.style.display = "none";
   downloadBtn.style.display = "block";
   back.style.display = "block";
 });
 
-afternoon.addEventListener("click", function (e) {
-    const date = getFormattedDate();
-    const day = getCurrentDay();
-    const isMorning = false;
-    drawTable(day, date, isMorning);
-    morning.style.display = "none";
-    afternoon.style.display = "none";
-    downloadBtn.style.display = "block";
-    back.style.display = "block";
-  });
+
+afternoon.addEventListener("click", async function (e) {
+  const date = getFormattedDate();
+  const day = getCurrentDay();
+  const isMorning = false;
+
+  await drawTable(day, date, isMorning); // Wait for drawing to finish
+
+  // These run *after* the table is fully drawn
+  morning.style.display = "none";
+  afternoon.style.display = "none";
+  downloadBtn.style.display = "block";
+  back.style.display = "block";
+});
+
 
 downloadBtn.addEventListener("click", function () {
   canvas.toBlob(function (blob) {
